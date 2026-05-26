@@ -39,11 +39,11 @@ app.post("/api/register-token", (req, res) => {
  */
 app.post("/webhooks/chat-message", async (req, res) => {
   try {
-    const secret = req.headers["x-webhook-secret"];
+    // const secret = req.headers["x-webhook-secret"];
 
-    if (secret !== process.env.WEBHOOK_SECRET) {
-      return res.status(401).json({ error: "Invalid webhook secret" });
-    }
+    // if (secret !== process.env.WEBHOOK_SECRET) {
+    //   return res.status(401).json({ error: "Invalid webhook secret" });
+    // }
 
     const {
       userId,

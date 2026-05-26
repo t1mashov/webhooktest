@@ -39,53 +39,25 @@ app.post("/api/register-token", (req, res) => {
 /**
  * Сюда будет стучаться внешний сервис
  */
-app.get("/webhooks/chat-message", async (req, res) => {
+app.all("/webhooks/chat-message", async (req, res) => {
   try {
-    const {
-      userId,
-      chatId,
-      messageId,
-      senderName,
-      text,
-    } = req.query;
-
-    if (!userId || !chatId || !messageId) {
-      return res.status(400).json({ error: "Invalid webhook payload" });
-    }
-
-    const token = userTokens.get(userId);
-
-    if (!token) {
-      return res.status(404).json({ error: "FCM token not found for user" });
-    }
-
-    const message = {
-      token,
-      notification: {
-        title: senderName
-          ? `Новое сообщение от ${senderName}`
-          : "Новое сообщение",
-        body: text || "Откройте чат",
-      },
-      data: {
-        chatId: String(chatId),
-        messageId: String(messageId),
-        userId: String(userId),
-      },
-      android: {
-        priority: "high",
-      },
-    };
-
-    const response = await admin.messaging().send(message);
+    console.log("HEADERS:", req.headers);
+    console.log("QUERY:", req.query);
+    console.log("BODY:", req.body);
 
     res.json({
       ok: true,
-      fcmMessageId: response,
+      received: true,
+      query: req.query,
+      body: req.body,
     });
   } catch (error) {
-    console.error("Webhook error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error(error);
+
+    res.status(500).json({
+      ok: false,
+      error: error.message,
+    });
   }
 });
 

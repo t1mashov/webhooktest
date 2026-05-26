@@ -39,26 +39,17 @@ app.post("/api/register-token", (req, res) => {
 /**
  * Сюда будет стучаться внешний сервис
  */
-app.all("/webhooks/chat-message", async (req, res) => {
-  try {
-    console.log("HEADERS:", req.headers);
-    console.log("QUERY:", req.query);
-    console.log("BODY:", req.body);
+app.post("/webhooks/chat-message", (req, res) => {
+  console.log("========== WEBHOOK ==========");
+  console.log("TIME:", new Date().toISOString());
+  console.log("HEADERS:", req.headers);
+  console.log("BODY:", req.body);
+  console.log("=============================");
 
-    res.json({
-      ok: true,
-      received: true,
-      query: req.query,
-      body: req.body,
-    });
-  } catch (error) {
-    console.error(error);
-
-    res.status(500).json({
-      ok: false,
-      error: error.message,
-    });
-  }
+  res.json({
+    ok: true,
+    received: true,
+  });
 });
 
 app.get("/health", (req, res) => {

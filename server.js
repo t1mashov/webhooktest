@@ -39,21 +39,15 @@ app.post("/api/register-token", (req, res) => {
 /**
  * Сюда будет стучаться внешний сервис
  */
-app.post("/webhooks/chat-message", async (req, res) => {
+app.get("/webhooks/chat-message", async (req, res) => {
   try {
-    // const secret = req.headers["x-webhook-secret"];
-
-    // if (secret !== process.env.WEBHOOK_SECRET) {
-    //   return res.status(401).json({ error: "Invalid webhook secret" });
-    // }
-
     const {
       userId,
       chatId,
       messageId,
       senderName,
       text,
-    } = req.body;
+    } = req.query;
 
     if (!userId || !chatId || !messageId) {
       return res.status(400).json({ error: "Invalid webhook payload" });
@@ -68,8 +62,10 @@ app.post("/webhooks/chat-message", async (req, res) => {
     const message = {
       token,
       notification: {
-        title: senderName ? `Новое сообщение от ${senderName}` : "Новое сообщение",
-        body: text || "Откройте чат, чтобы посмотреть сообщение",
+        title: senderName
+          ? `Новое сообщение от ${senderName}`
+          : "Новое сообщение",
+        body: text || "Откройте чат",
       },
       data: {
         chatId: String(chatId),
